@@ -56,56 +56,94 @@ const managerQuestion = () => {
     return inquirer.prompt ([
     {
         type: 'input',
-        name: 'number',
+        name: 'officeNumber',
         message: "What is the manager's office number?"
     },
-]).then(({ number }) => {
-    this.number = new Manager(number);
+]).then(({ officeNumber }) => {
+    this.officeNumber = new Manager(officeNumber);
 
-    
+    addEmployeeQuestion();
 });
 };
 const addEmployeeQuestion = () => {
     return inquirer.prompt ([
     {
-        type: 'list',
+        type: 'confirm',
         name: 'addEmployee',
         message: "Would you like to add an employee?",
-        choices: ['Engineer', 'Intern', 'Manager', 'Finished adding employees']
+        default: false
     },
 ])
+    .then(confirmAddEmployee => {
+        employeeData.employee.push(confirmAddEmployee);
+        if (confirmAddEmployee.addEmployee) {
+            return roleQuestions(employeeData);
+        } else {
+            return employeeData;
+        }
+    });
+};
+
+const roleQuestions = addEmployee => {
+    if (!addEmployee) {
+        addEmployee = [];
+    }
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'role',
+            message: "What is the employee's job title?",
+            choices: ['Engineer', 'Intern'],
+        }
+    ]) .then(({ role }) => {
+        this.role = new Employee (role);
+
+        checkRoleQuestion(role);
+    })
+};
+
+const checkRoleQuestion = () => {
+if (role = 'Engineer') {
+    engineerQuestion ();
+} else if (role = 'Intern') {
+    internQuestion ();
+}
+};
+
+const engineerQuestion = () => {
+    return inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'github',
+            message: "What is this engineer's Github Username?",
+            validate: githubUserName => {
+                if (githubUserName) {
+                    return true;
+                } else {
+                    console.log('Please enter the Github Username!');
+                    return false;
+                }
+            }
+        },
+    ]);
+};
+
+const internQuestion = () => {
+    return inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'school',
+            message: "What school does this intern attend?",
+            validate: schoolName => {
+                if (schoolName) {
+                    return true;
+                } else {
+                    console.log('Please enter the school name!');
+                    return false;
+                }
+            }
+        },
+    ]);   
 };
 
 empQuestions();
-// if (addEmployee == 'Engineer') {
-//     const  engineerQuestion = () => {
-//     return inquirer.prompt ([
-//         {
-//             type: 'input',
-//             name: 'github',
-//             message: "What is this engineer's Github Username?",
-//             validate: githubUserName => {
-//                 if (githubUserName) {
-//                     return true;
-//                 } else {
-//                     console.log('Please enter the Github Username!');
-//                     return false;
-//                 }
-//             }
-//         },   
-//     ])
-// };
-// } else if (addEmployee == 'Intern') {
-//     const internQuestion = () => {
-//     return inquirer.prompt ([
-//         {
-//             type: 'input',
-//             name: 'school',
-//             message: "What school does this intern attend?"
-//         }  
-//     ])
-// };
-// } else if (addEmployee == 'Finished adding employees') {
-    
-// };
-

@@ -4,6 +4,8 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 
+const employees = [];
+
 const empQuestions = () => {
     return inquirer.prompt ([
     {
@@ -45,13 +47,29 @@ const empQuestions = () => {
             }
         }
     },
-]).then(({ name, id, email }) => {
-    this.employee = new Employee(name, id, email);
+    {
+        type: 'list',
+        name: 'role',
+        message: "What is the employee's job title?",
+        choices: ['Engineer', 'Intern', 'Manager'],
+    },
+]).then(({ name, id, email, role }) => {
+    this.employee = new Employee(name, id, email, role);
 
-    managerQuestion();
+    checkRole(role);
 
 });
 };
+
+const checkRole = role => {if (role === 'Manager') {
+    managerQuestion();
+} else if (role === 'Engineer') {
+    engineerQuestion();
+} else if (role === 'Intern') {
+    internQuestion();
+} 
+};
+
 const managerQuestion = () => {
     return inquirer.prompt ([
     {
@@ -64,50 +82,6 @@ const managerQuestion = () => {
 
     addEmployeeQuestion();
 });
-};
-const addEmployeeQuestion = () => {
-    return inquirer.prompt ([
-    {
-        type: 'confirm',
-        name: 'addEmployee',
-        message: "Would you like to add an employee?",
-        default: false
-    },
-])
-    .then(confirmAddEmployee => {
-        employeeData.employee.push(confirmAddEmployee);
-        if (confirmAddEmployee.addEmployee) {
-            return roleQuestions(employeeData);
-        } else {
-            return employeeData;
-        }
-    });
-};
-
-const roleQuestions = addEmployee => {
-    if (!addEmployee) {
-        addEmployee = [];
-    }
-    return inquirer.prompt([
-        {
-            type: 'list',
-            name: 'role',
-            message: "What is the employee's job title?",
-            choices: ['Engineer', 'Intern'],
-        }
-    ]) .then(({ role }) => {
-        this.role = new Employee (role);
-
-        checkRoleQuestion(role);
-    })
-};
-
-const checkRoleQuestion = () => {
-if (role = 'Engineer') {
-    engineerQuestion ();
-} else if (role = 'Intern') {
-    internQuestion ();
-}
 };
 
 const engineerQuestion = () => {
@@ -124,8 +98,12 @@ const engineerQuestion = () => {
                     return false;
                 }
             }
-        },
-    ]);
+        }
+    ]).then(({github}) => {
+        this.github = new Engineer (github);
+
+        addEmployeeQuestion();
+    });
 };
 
 const internQuestion = () => {
@@ -142,8 +120,29 @@ const internQuestion = () => {
                     return false;
                 }
             }
-        },
-    ]);   
+        }
+    ]).then(({ school }) => {
+        this.school = new Intern (school);
+
+        addEmployeeQuestion();
+    });   
+};
+
+const addEmployeeQuestion = () => {
+    return inquirer.prompt ([
+    {
+        type: 'confirm',
+        name: 'addEmployee',
+        message: "Would you like to add another employee?",
+        default: false
+    },
+]).then(answers => {
+    if(answers.addEmployee === true) {
+        empQuestions();
+    } else {
+        //build web page function
+    }
+});
 };
 
 empQuestions();

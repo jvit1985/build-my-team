@@ -28,7 +28,7 @@ const managerQuestions = () => {
     {
         type: 'input',
         name: 'id',
-        message: "Please enter the manager's ID",
+        message: "What is the manager's ID?",
         validate: idInput => {
             if (idInput) {
                 return true;
@@ -41,7 +41,7 @@ const managerQuestions = () => {
     {
         type: 'input',
         name: 'email',
-        message: "Please enter manager's email",
+        message: "What is the manager's email?",
         validate: emailInput => {
             if (emailInput) {
                 return true;
@@ -76,7 +76,7 @@ const makeTeam = () => {
         {
             type:'list',
             name: 'role',
-            message:'Select a team member',
+            message:'Select a role for your team member:',
             choices: ['Engineer', 'Intern', 'Done adding team members']
         },
     ]).then((answers) => {
